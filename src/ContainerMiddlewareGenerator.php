@@ -43,7 +43,7 @@ class ContainerMiddlewareGenerator implements IteratorAggregate
     {
         foreach ($this->middleware as $middleware) {
 
-            yield is_string($middleware) && is_a($middleware, MiddlewareInterface::class, true)
+            yield is_string($middleware) && is_subclass_of($middleware, MiddlewareInterface::class, true)
                 ? new ContainerMiddleware($this->factory, $middleware)
                 : $middleware;
 

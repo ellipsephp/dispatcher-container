@@ -48,7 +48,7 @@ class ContainerResolver implements DispatcherFactoryInterface
     {
         $middleware = new ContainerMiddlewareGenerator($this->factory, $middleware);
 
-        if (is_string($handler) && is_a($handler, RequestHandlerInterface::class, true)) {
+        if (is_string($handler) && is_subclass_of($handler, RequestHandlerInterface::class, true)) {
 
             $handler = new ContainerRequestHandler($this->factory, $handler);
 
