@@ -24,8 +24,7 @@ class ContainerResolver implements DispatcherFactoryInterface
     private $delegate;
 
     /**
-     * Set up a dispatcher factory resolving class names with the given factory
-     * and delegate.
+     * Set up a container resolver with the given factory and delegate.
      *
      * @param callable                              $factory
      * @param \Ellipse\DispatcherFactoryInterface   $delegate
