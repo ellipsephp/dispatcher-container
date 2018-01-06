@@ -4,9 +4,10 @@ use function Eloquent\Phony\Kahlan\stub;
 use function Eloquent\Phony\Kahlan\mock;
 use function Eloquent\Phony\Kahlan\onStatic;
 
+use Psr\Container\ContainerInterface;
+
 use Interop\Http\Server\MiddlewareInterface;
 
-use Ellipse\Dispatcher\ContainerFactory;
 use Ellipse\Dispatcher\ContainerMiddleware;
 use Ellipse\Dispatcher\ContainerMiddlewareGenerator;
 
@@ -14,7 +15,7 @@ describe('ContainerMiddlewareGenerator', function () {
 
     beforeEach(function () {
 
-        $this->factory = mock(ContainerFactory::class)->get();
+        $this->container = mock(ContainerInterface::class)->get();
 
         $this->middleware1 = mock(MiddlewareInterface::class)->get();
         $this->middleware2 = onStatic(mock(MiddlewareInterface::class))->className();
@@ -31,7 +32,7 @@ describe('ContainerMiddlewareGenerator', function () {
 
     it('should be an instance of Traversable', function () {
 
-        $test = new ContainerMiddlewareGenerator($this->factory, ['middleware1', 'middleware2']);
+        $test = new ContainerMiddlewareGenerator($this->container, ['middleware1', 'middleware2']);
 
         expect($test)->toBeAnInstanceOf(Traversable::class);
 
@@ -43,12 +44,12 @@ describe('ContainerMiddlewareGenerator', function () {
 
             $test = function ($middleware) {
 
-                $generator = new ContainerMiddlewareGenerator($this->factory, $middleware);
+                $generator = new ContainerMiddlewareGenerator($this->container, $middleware);
 
                 $test = iterator_to_array($generator);
 
                 expect($test[0])->toBe($this->middleware1);
-                expect($test[1])->toEqual(new ContainerMiddleware($this->factory, $this->middleware2));
+                expect($test[1])->toEqual(new ContainerMiddleware($this->container, $this->middleware2));
                 expect($test[2])->toBe($this->middleware3);
                 expect($test[3])->toEqual('middleware4');
 
@@ -68,19 +69,19 @@ describe('ContainerMiddlewareGenerator', function () {
 
             $test = function ($middleware) {
 
-                $generator = new ContainerMiddlewareGenerator($this->factory, $middleware);
+                $generator = new ContainerMiddlewareGenerator($this->container, $middleware);
 
                 $test = iterator_to_array($generator);
 
                 expect($test[0])->toBe($this->middleware1);
-                expect($test[1])->toEqual(new ContainerMiddleware($this->factory, $this->middleware2));
+                expect($test[1])->toEqual(new ContainerMiddleware($this->container, $this->middleware2));
                 expect($test[2])->toBe($this->middleware3);
                 expect($test[3])->toEqual('middleware4');
 
                 $test = iterator_to_array($generator);
 
                 expect($test[0])->toBe($this->middleware1);
-                expect($test[1])->toEqual(new ContainerMiddleware($this->factory, $this->middleware2));
+                expect($test[1])->toEqual(new ContainerMiddleware($this->container, $this->middleware2));
                 expect($test[2])->toBe($this->middleware3);
                 expect($test[3])->toEqual('middleware4');
 

@@ -2,6 +2,8 @@
 
 namespace Ellipse\Dispatcher;
 
+use Psr\Container\ContainerInterface;
+
 use Interop\Http\Server\RequestHandlerInterface;
 
 use Ellipse\Dispatcher;
@@ -10,11 +12,11 @@ use Ellipse\DispatcherFactoryInterface;
 class ContainerResolver implements DispatcherFactoryInterface
 {
     /**
-     * The container factory.
+     * The container.
      *
-     * @var \Ellipse\Dispatcher\ContainerFactory
+     * @var \Psr\Container\ContainerInterface
      */
-    private $factory;
+    private $container;
 
     /**
      * The delegate.
@@ -24,14 +26,14 @@ class ContainerResolver implements DispatcherFactoryInterface
     private $delegate;
 
     /**
-     * Set up a container resolver with the given factory and delegate.
+     * Set up a container resolver with the given container and delegate.
      *
-     * @param callable                              $factory
+     * @param \Psr\Container\ContainerInterface     $container
      * @param \Ellipse\DispatcherFactoryInterface   $delegate
      */
-    public function __construct(callable $factory, DispatcherFactoryInterface $delegate)
+    public function __construct(ContainerInterface $container, DispatcherFactoryInterface $delegate)
     {
-        $this->factory = new ContainerFactory($factory);
+        $this->container = $container;
         $this->delegate = $delegate;
     }
 
@@ -45,11 +47,11 @@ class ContainerResolver implements DispatcherFactoryInterface
      */
     public function __invoke($handler, iterable $middleware = []): Dispatcher
     {
-        $middleware = new ContainerMiddlewareGenerator($this->factory, $middleware);
+        $middleware = new ContainerMiddlewareGenerator($this->container, $middleware);
 
         if (is_string($handler) && is_subclass_of($handler, RequestHandlerInterface::class, true)) {
 
-            $handler = new ContainerRequestHandler($this->factory, $handler);
+            $handler = new ContainerRequestHandler($this->container, $handler);
 
         }
 

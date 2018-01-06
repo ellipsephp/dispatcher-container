@@ -4,16 +4,18 @@ namespace Ellipse\Dispatcher;
 
 use IteratorAggregate;
 
+use Psr\Container\ContainerInterface;
+
 use Interop\Http\Server\MiddlewareInterface;
 
 class ContainerMiddlewareGenerator implements IteratorAggregate
 {
     /**
-     * The container factory.
+     * The container.
      *
-     * @var \Ellipse\Dispatcher\ContainerFactory
+     * @var \Psr\Container\ContainerInterface
      */
-    private $factory;
+    private $container;
 
     /**
      * The iterable list of middleware which may be a middleware class name.
@@ -23,15 +25,15 @@ class ContainerMiddlewareGenerator implements IteratorAggregate
     private $middleware;
 
     /**
-     * Set up a container middleware with the given container factory and
-     * iterable list of middleware.
+     * Set up a container middleware with the given container and iterable list
+     * of middleware.
      *
-     * @param \Ellipse\Dispatcher\ContainerFactory  $factory
-     * @param iterable                              $middleware
+     * @param \Psr\Container\ContainerInterface $container
+     * @param iterable                          $middleware
      */
-    public function __construct(ContainerFactory $factory, iterable $middleware)
+    public function __construct(ContainerInterface $container, iterable $middleware)
     {
-        $this->factory = $factory;
+        $this->container = $container;
         $this->middleware = $middleware;
     }
 
@@ -44,7 +46,7 @@ class ContainerMiddlewareGenerator implements IteratorAggregate
         foreach ($this->middleware as $middleware) {
 
             yield is_string($middleware) && is_subclass_of($middleware, MiddlewareInterface::class, true)
-                ? new ContainerMiddleware($this->factory, $middleware)
+                ? new ContainerMiddleware($this->container, $middleware)
                 : $middleware;
 
         }

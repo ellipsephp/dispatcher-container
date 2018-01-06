@@ -1,14 +1,14 @@
 <?php
 
-use function Eloquent\Phony\Kahlan\stub;
 use function Eloquent\Phony\Kahlan\mock;
 use function Eloquent\Phony\Kahlan\onStatic;
+
+use Psr\Container\ContainerInterface;
 
 use Interop\Http\Server\RequestHandlerInterface;
 
 use Ellipse\Dispatcher;
 use Ellipse\DispatcherFactoryInterface;
-use Ellipse\Dispatcher\ContainerFactory;
 use Ellipse\Dispatcher\ContainerResolver;
 use Ellipse\Dispatcher\ContainerRequestHandler;
 use Ellipse\Dispatcher\ContainerMiddlewareGenerator;
@@ -17,13 +17,11 @@ describe('ContainerResolver', function () {
 
     beforeEach(function () {
 
-        $factory = stub();
-
-        $this->factory = new ContainerFactory($factory);
+        $this->container = mock(ContainerInterface::class)->get();
 
         $this->delegate = mock(DispatcherFactoryInterface::class);
 
-        $this->resolver = new ContainerResolver($factory, $this->delegate->get());
+        $this->resolver = new ContainerResolver($this->container, $this->delegate->get());
 
     });
 
@@ -61,7 +59,7 @@ describe('ContainerResolver', function () {
 
                 $class = onStatic(mock(RequestHandlerInterface::class))->className();
 
-                $handler = new ContainerRequestHandler($this->factory, $class);
+                $handler = new ContainerRequestHandler($this->container, $class);
 
                 $this->delegate->__invoke->with($handler, '~')->returns($this->dispatcher);
 
@@ -77,7 +75,7 @@ describe('ContainerResolver', function () {
 
             it('should proxy the delegate with an empty array wrapped into a container middleware generator', function () {
 
-                $generator = new ContainerMiddlewareGenerator($this->factory, []);
+                $generator = new ContainerMiddlewareGenerator($this->container, []);
 
                 $this->delegate->__invoke->with('~', $generator)->returns($this->dispatcher);
 
@@ -95,7 +93,7 @@ describe('ContainerResolver', function () {
 
                 $test = function ($middleware) {
 
-                    $generator = new ContainerMiddlewareGenerator($this->factory, $middleware);
+                    $generator = new ContainerMiddlewareGenerator($this->container, $middleware);
 
                     $this->delegate->__invoke->with('~', $generator)->returns($this->dispatcher);
 

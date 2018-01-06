@@ -2,6 +2,8 @@
 
 namespace Ellipse\Dispatcher;
 
+use Psr\Container\ContainerInterface;
+
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
@@ -11,11 +13,11 @@ use Interop\Http\Server\RequestHandlerInterface;
 class ContainerMiddleware implements MiddlewareInterface
 {
     /**
-     * The container factory.
+     * The container.
      *
-     * @var \Ellipse\Dispatcher\ContainerFactory
+     * @var \Psr\Container\ContainerInterface
      */
-    private $factory;
+    private $container;
 
     /**
      * The middleware class name.
@@ -25,20 +27,19 @@ class ContainerMiddleware implements MiddlewareInterface
     private $class;
 
     /**
-     * Set up a container middleware with the given container factory and class
-     * name.
+     * Set up a container middleware with the given container and class name.
      *
-     * @param \Ellipse\Dispatcher\ContainerFactory  $factory
-     * @param string                                $class
+     * @param \Psr\Container\ContainerInterface $container
+     * @param string                            $class
      */
-    public function __construct(ContainerFactory $factory, string $class)
+    public function __construct(ContainerInterface $container, string $class)
     {
-        $this->factory = $factory;
+        $this->container = $container;
         $this->class = $class;
     }
 
     /**
-     * Get a container from the factory then proxy the retrieved middleware.
+     * Get a middleware from the container then proxy its ->process() method.
      *
      * @param \Psr\Http\Message\ServerRequestInterface      $request
      * @param \Interop\Http\Server\RequestHandlerInterface  $handler
@@ -46,8 +47,6 @@ class ContainerMiddleware implements MiddlewareInterface
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        $middleware = ($this->factory)($request)->get($this->class);
-
-        return $middleware->process($request, $handler);
+        return $this->container->get($this->class)->process($request, $handler);
     }
 }

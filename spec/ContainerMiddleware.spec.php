@@ -10,16 +10,15 @@ use Psr\Http\Message\ResponseInterface;
 use Interop\Http\Server\MiddlewareInterface;
 use Interop\Http\Server\RequestHandlerInterface;
 
-use Ellipse\Dispatcher\ContainerFactory;
 use Ellipse\Dispatcher\ContainerMiddleware;
 
 describe('ContainerMiddleware', function () {
 
     beforeEach(function () {
 
-        $this->factory = mock(ContainerFactory::class);
+        $this->container = mock(ContainerInterface::class);
 
-        $this->middleware = new ContainerMiddleware($this->factory->get(), 'SomeMiddleware');
+        $this->middleware = new ContainerMiddleware($this->container->get(), 'SomeMiddleware');
 
     });
 
@@ -33,8 +32,6 @@ describe('ContainerMiddleware', function () {
 
         it('should get the middleware from the container and proxy its ->process() method', function () {
 
-            $container = mock(ContainerInterface::class);
-
             $request = mock(ServerRequestInterface::class)->get();
             $response = mock(ResponseInterface::class)->get();
 
@@ -42,9 +39,7 @@ describe('ContainerMiddleware', function () {
 
             $middleware = mock(MiddlewareInterface::class);
 
-            $this->factory->__invoke->with($request)->returns($container);
-
-            $container->get->with('SomeMiddleware')->returns($middleware);
+            $this->container->get->with('SomeMiddleware')->returns($middleware);
 
             $middleware->process->with($request, $handler)->returns($response);
 

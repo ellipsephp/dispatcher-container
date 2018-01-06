@@ -9,16 +9,15 @@ use Psr\Http\Message\ResponseInterface;
 
 use Interop\Http\Server\RequestHandlerInterface;
 
-use Ellipse\Dispatcher\ContainerFactory;
 use Ellipse\Dispatcher\ContainerRequestHandler;
 
 describe('ContainerRequestHandler', function () {
 
     beforeEach(function () {
 
-        $this->factory = mock(ContainerFactory::class);
+        $this->container = mock(ContainerInterface::class);
 
-        $this->handler = new ContainerRequestHandler($this->factory->get(), 'SomeRequestHandler');
+        $this->handler = new ContainerRequestHandler($this->container->get(), 'SomeRequestHandler');
 
     });
 
@@ -32,16 +31,12 @@ describe('ContainerRequestHandler', function () {
 
         it('should get the request handler from the container and proxy its ->handle() method', function () {
 
-            $container = mock(ContainerInterface::class);
-
             $request = mock(ServerRequestInterface::class)->get();
             $response = mock(ResponseInterface::class)->get();
 
             $handler = mock(RequestHandlerInterface::class);
 
-            $this->factory->__invoke->with($request)->returns($container);
-
-            $container->get->with('SomeRequestHandler')->returns($handler);
+            $this->container->get->with('SomeRequestHandler')->returns($handler);
 
             $handler->handle->with($request)->returns($response);
 

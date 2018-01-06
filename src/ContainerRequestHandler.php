@@ -2,6 +2,8 @@
 
 namespace Ellipse\Dispatcher;
 
+use Psr\Container\ContainerInterface;
+
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
@@ -10,11 +12,11 @@ use Interop\Http\Server\RequestHandlerInterface;
 class ContainerRequestHandler implements RequestHandlerInterface
 {
     /**
-     * The container factory.
+     * The container.
      *
-     * @var \Ellipse\Dispatcher\ContainerFactory
+     * @var \Psr\Container\ContainerInterface
      */
-    private $factory;
+    private $container;
 
     /**
      * The request handler class name.
@@ -24,29 +26,27 @@ class ContainerRequestHandler implements RequestHandlerInterface
     private $class;
 
     /**
-     * Set up a container request handler with the given container factory and
-     * class name.
+     * Set up a container request handler with the given container and class
+     * name.
      *
-     * @param \Ellipse\Dispatcher\ContainerFactory  $factory
-     * @param string                                $class
+     * @param \Psr\Container\ContainerInterface $container
+     * @param string                            $class
      */
-    public function __construct(ContainerFactory $factory, string $class)
+    public function __construct(ContainerInterface $container, string $class)
     {
-        $this->factory = $factory;
+        $this->container = $container;
         $this->class = $class;
     }
 
     /**
-     * Get a container from the factory then proxy the retrieved request
-     * handler.
+     * Get a request handler from the container then proxy its ->handle()
+     * method.
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request
      * @return \Psr\Http\Message\ResponseInterface
      */
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        $handler = ($this->factory)($request)->get($this->class);
-
-        return $handler->handle($request);
+        return $this->container->get($this->class)->handle($request);
     }
 }
