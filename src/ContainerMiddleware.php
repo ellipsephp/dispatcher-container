@@ -6,9 +6,8 @@ use Psr\Container\ContainerInterface;
 
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
-
-use Interop\Http\Server\MiddlewareInterface;
-use Interop\Http\Server\RequestHandlerInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
 class ContainerMiddleware implements MiddlewareInterface
 {
@@ -41,8 +40,8 @@ class ContainerMiddleware implements MiddlewareInterface
     /**
      * Get a middleware from the container then proxy its ->process() method.
      *
-     * @param \Psr\Http\Message\ServerRequestInterface      $request
-     * @param \Interop\Http\Server\RequestHandlerInterface  $handler
+     * @param \Psr\Http\Message\ServerRequestInterface  $request
+     * @param \Psr\Http\Server\RequestHandlerInterface  $handler
      * @return \Psr\Http\Message\ResponseInterface
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface

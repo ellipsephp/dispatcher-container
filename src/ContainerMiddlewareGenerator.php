@@ -6,7 +6,7 @@ use IteratorAggregate;
 
 use Psr\Container\ContainerInterface;
 
-use Interop\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\MiddlewareInterface;
 
 class ContainerMiddlewareGenerator implements IteratorAggregate
 {

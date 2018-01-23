@@ -5,7 +5,7 @@ use function Eloquent\Phony\Kahlan\onStatic;
 
 use Psr\Container\ContainerInterface;
 
-use Interop\Http\Server\RequestHandlerInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
 use Ellipse\Dispatcher;
 use Ellipse\DispatcherFactoryInterface;

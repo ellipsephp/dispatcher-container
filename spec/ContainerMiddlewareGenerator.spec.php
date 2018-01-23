@@ -6,7 +6,7 @@ use function Eloquent\Phony\Kahlan\onStatic;
 
 use Psr\Container\ContainerInterface;
 
-use Interop\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\MiddlewareInterface;
 
 use Ellipse\Dispatcher\ContainerMiddleware;
 use Ellipse\Dispatcher\ContainerMiddlewareGenerator;
