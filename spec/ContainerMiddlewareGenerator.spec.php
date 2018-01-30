@@ -8,7 +8,7 @@ use Psr\Container\ContainerInterface;
 
 use Psr\Http\Server\MiddlewareInterface;
 
-use Ellipse\Dispatcher\ContainerMiddleware;
+use Ellipse\Middleware\ContainerMiddleware;
 use Ellipse\Dispatcher\ContainerMiddlewareGenerator;
 
 describe('ContainerMiddlewareGenerator', function () {

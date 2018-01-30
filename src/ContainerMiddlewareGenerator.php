@@ -8,6 +8,8 @@ use Psr\Container\ContainerInterface;
 
 use Psr\Http\Server\MiddlewareInterface;
 
+use Ellipse\Middleware\ContainerMiddleware;
+
 class ContainerMiddlewareGenerator implements IteratorAggregate
 {
     /**
