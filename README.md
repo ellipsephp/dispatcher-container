@@ -1,6 +1,6 @@
 # Container resolver
 
-This package provides a factory producing instances of [ellipse/dispatcher](https://github.com/ellipsephp/dispatcher) resolving [Psr-15 middleware](https://github.com/http-interop/http-server-middleware) and [Psr-15 request handler](https://github.com/http-interop/http-server-handler) class names as actual instances using a [Psr-11 container](http://www.php-fig.org/psr/psr-11/meta/).
+This package provides a factory producing instances of [ellipse/dispatcher](https://github.com/ellipsephp/dispatcher) resolving [Psr-15 middleware](https://www.php-fig.org/psr/psr-15/) and [Psr-15 request handler](https://www.php-fig.org/psr/psr-15/) class names as actual instances using a [Psr-11 container](http://www.php-fig.org/psr/psr-11/).
 
 **Require** php >= 7.1
 
@@ -35,7 +35,7 @@ $request = some_psr7_request_factory();
 // Get some Psr-11 container.
 $container = new SomePsr11Container;
 
-// Assuming SomeMiddleware1 implements Interop\Http\Server\MiddlewareInterface:
+// Assuming SomeMiddleware1 implements Psr\Http\Server\MiddlewareInterface:
 $container->set(SomeMiddleware1::class, function ($container) {
 
     $dependency = $container->get(MiddlewareDependency::class);
@@ -44,7 +44,7 @@ $container->set(SomeMiddleware1::class, function ($container) {
 
 });
 
-// Assuming SomeRequestHandler implements Interop\Http\Server\RequestHandlerInterface:
+// Assuming SomeRequestHandler implements Psr\Http\Server\RequestHandlerInterface:
 $container->set(SomeRequestHandler::class, function () {
 
     $dependency = $container->get(RequestHandlerDependency::class);
