@@ -5,13 +5,14 @@ use function Eloquent\Phony\Kahlan\onStatic;
 
 use Psr\Container\ContainerInterface;
 
+use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
 use Ellipse\Dispatcher;
 use Ellipse\DispatcherFactoryInterface;
 use Ellipse\Dispatcher\ContainerResolver;
 use Ellipse\Dispatcher\ContainerRequestHandler;
-use Ellipse\Dispatcher\ContainerMiddlewareGenerator;
+use Ellipse\Middleware\ContainerMiddleware;
 
 describe('ContainerResolver', function () {
 
@@ -71,13 +72,11 @@ describe('ContainerResolver', function () {
 
         });
 
-        context('when no iterable list of middleware is given', function () {
+        context('when no middleware queue is given', function () {
 
-            it('should proxy the delegate with an empty array wrapped into a container middleware generator', function () {
+            it('should proxy the delegate with an empty array', function () {
 
-                $generator = new ContainerMiddlewareGenerator($this->container, []);
-
-                $this->delegate->__invoke->with('~', $generator)->returns($this->dispatcher);
+                $this->delegate->__invoke->with('~', [])->returns($this->dispatcher);
 
                 $test = ($this->resolver)('handler');
 
@@ -87,31 +86,19 @@ describe('ContainerResolver', function () {
 
         });
 
-        context('when an iterable list of middleware is given', function () {
+        context('when an middleware queue is given', function () {
 
-            it('should proxy the delegate with the given iterable list of middleware wrapped into a container middleware generator', function () {
+            it('should proxy the delegate with ContainerMiddleware wrapped around the middleware class names of the middleware queue', function () {
 
-                $test = function ($middleware) {
+                $class = onStatic(mock(MiddlewareInterface::class))->className();
 
-                    $generator = new ContainerMiddlewareGenerator($this->container, $middleware);
+                $this->delegate->__invoke
+                    ->with('~', ['middleware', new ContainerMiddleware($this->container, $class)])
+                    ->returns($this->dispatcher);
 
-                    $this->delegate->__invoke->with('~', $generator)->returns($this->dispatcher);
+                $test = ($this->resolver)('handler', ['middleware', $class]);
 
-                    $test = ($this->resolver)('handler', $middleware);
-
-                    expect($test)->toBe($this->dispatcher);
-
-                };
-
-                $middleware = ['middleware1', 'middleware2'];
-
-                $test($middleware);
-                $test(new ArrayIterator($middleware));
-                $test(new class ($middleware) implements IteratorAggregate
-                {
-                    public function __construct($middleware) { $this->middleware = $middleware; }
-                    public function getIterator() { return new ArrayIterator($this->middleware); }
-                });
+                expect($test)->toBe($this->dispatcher);
 
             });
 

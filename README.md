@@ -1,8 +1,8 @@
 # Container resolver
 
-This package provides a factory producing instances of [ellipse/dispatcher](https://github.com/ellipsephp/dispatcher) resolving [Psr-15 middleware](https://www.php-fig.org/psr/psr-15/) and [Psr-15 request handler](https://www.php-fig.org/psr/psr-15/) class names as actual instances using a [Psr-11 container](http://www.php-fig.org/psr/psr-11/).
+This package provides a factory producing instances of [ellipse/dispatcher](https://github.com/ellipsephp/dispatcher) resolving [Psr-15](https://www.php-fig.org/psr/psr-15/) middleware and [Psr-15](https://www.php-fig.org/psr/psr-15/) request handler class names as actual instances using a [Psr-11 container](http://www.php-fig.org/psr/psr-11/).
 
-**Require** php >= 7.1
+**Require** php >= 7.0
 
 **Installation** `composer require ellipse/dispatcher-container`
 
