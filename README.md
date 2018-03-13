@@ -1,6 +1,8 @@
 # Container resolver
 
-This package provides a factory producing instances of [ellipse/dispatcher](https://github.com/ellipsephp/dispatcher) resolving [Psr-15](https://www.php-fig.org/psr/psr-15/) middleware and [Psr-15](https://www.php-fig.org/psr/psr-15/) request handler class names as actual instances using a [Psr-11 container](http://www.php-fig.org/psr/psr-11/).
+This package provides a factory decorator for objects implementing `Ellipse\DispatcherFactoryInterface` from [ellipse/dispatcher](https://github.com/ellipsephp/dispatcher) package.
+
+The resulting factory uses a [Psr-11](http://www.php-fig.org/psr/psr-11/) container to produce instances of `Ellipse\Dispatcher` using class names as [Psr-15](https://www.php-fig.org/psr/psr-15/) middleware and request handler.
 
 **Require** php >= 7.0
 
@@ -8,11 +10,11 @@ This package provides a factory producing instances of [ellipse/dispatcher](http
 
 **Run tests** `./vendor/bin/kahlan`
 
-- [Getting started](https://github.com/ellipsephp/dispatcher-container#getting-started)
+- [Create a dispatcher using Psr-15 class names](https://github.com/ellipsephp/dispatcher-container#create-a-dispatcher-using-Psr-15-class-names)
 
-## Getting started
+## Create a dispatcher using Psr-15 class names
 
-This package provides an `Ellipse\Dispatcher\ContainerResolver` class implementing `Ellipse\DispatcherFactoryInterface` which allows to decorate any other instance implementing this interface.
+This package provides an `Ellipse\Dispatcher\ContainerResolver` class implementing `Ellipse\DispatcherFactoryInterface` which allows to decorate any other object implementing this interface.
 
 It takes a container implementing `Psr\Container\ContainerInterface` as first parameter and the factory to decorate as second parameter.
 
