@@ -11,8 +11,8 @@ use Psr\Http\Server\RequestHandlerInterface;
 use Ellipse\Dispatcher;
 use Ellipse\DispatcherFactoryInterface;
 use Ellipse\Dispatcher\ContainerResolver;
-use Ellipse\Dispatcher\ContainerRequestHandler;
 use Ellipse\Middleware\ContainerMiddleware;
+use Ellipse\Handlers\ContainerRequestHandler;
 
 describe('ContainerResolver', function () {
 

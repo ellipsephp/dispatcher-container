@@ -10,6 +10,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 use Ellipse\Dispatcher;
 use Ellipse\DispatcherFactoryInterface;
 use Ellipse\Middleware\ContainerMiddleware;
+use Ellipse\Handlers\ContainerRequestHandler;
 
 class ContainerResolver implements DispatcherFactoryInterface
 {
@@ -49,18 +50,18 @@ class ContainerResolver implements DispatcherFactoryInterface
      */
     public function __invoke($handler, array $middleware = []): Dispatcher
     {
-        if (is_string($handler) && is_subclass_of($handler, RequestHandlerInterface::class, true)) {
+        $handler = is_string($handler) && is_subclass_of($handler, RequestHandlerInterface::class, true)
+            ? new ContainerRequestHandler($this->container, $handler)
+            : $handler;
 
-            $handler = new ContainerRequestHandler($this->container, $handler);
-
-        }
-
-        return ($this->delegate)($handler, array_map(function ($middleware) {
+        $middleware = array_map(function ($middleware) {
 
             return is_string($middleware) && is_subclass_of($middleware, MiddlewareInterface::class, true)
                 ? new ContainerMiddleware($this->container, $middleware)
                 : $middleware;
 
-        }, $middleware));
+        }, $middleware);
+
+        return ($this->delegate)($handler, $middleware);
     }
 }
