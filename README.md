@@ -11,6 +11,7 @@ The resulting factory uses a [Psr-11](http://www.php-fig.org/psr/psr-11/) contai
 **Run tests** `./vendor/bin/kahlan`
 
 - [Create a dispatcher using Psr-15 class names](https://github.com/ellipsephp/dispatcher-container#create-a-dispatcher-using-Psr-15-class-names)
+- [Example using auto wiring](#example-using-auto-wiring)
 
 ## Create a dispatcher using Psr-15 class names
 
@@ -64,6 +65,41 @@ $dispatcher = $factory(SomeRequestHandler::class, [
     new SomeMiddleware2,
 ]);
 
-// This works :-)
+// Middleware and request handler are retrieved from the container.
 $dispatcher->handle($request);
+```
+
+## Example using auto wiring
+
+It can be cumbersome to register every middleware and request handler classes in the container. Here is how to auto wire middleware and request handler instances using the `Ellipse\Container\ReflectionContainer` class from the [ellipse/container-reflection](https://github.com/ellipsephp/container-reflection) package.
+
+```php
+<?php
+
+namespace App;
+
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
+
+use SomePsr11Container;
+
+use Ellipse\DispatcherFactory;
+use Ellipse\Dispatcher\ContainerResolver;
+use Ellipse\Container\ReflectionContainer;
+
+// Get some Psr-11 container.
+$container = new SomePsr11Container;
+
+// Decorate the container with a reflection container.
+// Specify the middleware and request handler implementations can be auto wired.
+$reflection = new ReflectionContainer($container, [
+    MiddlewareInterface::class,
+    RequestHandlerInterface::class,
+]);
+
+// Create a container resolver using the reflection container.
+$factory = new ContainerResolver($reflection, new DispatcherFactory);
+
+// Instances of SomeMiddleware and SomeRequestHandler are built using auto wiring.
+$dispatcher = $factory(SomeRequestHandler::class, [SomeMiddleware::class]);
 ```
