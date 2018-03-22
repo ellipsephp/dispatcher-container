@@ -1,7 +1,7 @@
 {
     "name": "ellipse/dispatcher-container",
     "type": "library",
-    "description": "Psr-15 middleware dispatcher factory resolving class names from Psr-11 container",
+    "description": "Psr-15 middleware dispatcher factory resolving class names from a Psr-11 container",
     "keywords": [
         "Psr-15",
         "Psr-11",
